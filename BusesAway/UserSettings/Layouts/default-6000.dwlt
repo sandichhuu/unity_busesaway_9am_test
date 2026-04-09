@@ -781,7 +781,7 @@ MonoBehaviour:
   m_ShowGizmos: 0
   m_TargetDisplay: 0
   m_ClearColor: {r: 0, g: 0, b: 0, a: 0}
-  m_TargetSize: {x: 1068, y: 886}
+  m_TargetSize: {x: 1080, y: 1920}
   m_TextureFilterMode: 0
   m_TextureHideFlags: 61
   m_RenderIMGUI: 1
@@ -796,10 +796,10 @@ MonoBehaviour:
     m_VRangeLocked: 0
     hZoomLockedByDefault: 0
     vZoomLockedByDefault: 0
-    m_HBaseRangeMin: -534
-    m_HBaseRangeMax: 534
-    m_VBaseRangeMin: -443
-    m_VBaseRangeMax: 443
+    m_HBaseRangeMin: -540
+    m_HBaseRangeMax: 540
+    m_VBaseRangeMin: -960
+    m_VBaseRangeMax: 960
     m_HAllowExceedBaseRangeMin: 1
     m_HAllowExceedBaseRangeMax: 1
     m_VAllowExceedBaseRangeMin: 1
@@ -819,7 +819,7 @@ MonoBehaviour:
       y: 21
       width: 1068
       height: 886
-    m_Scale: {x: 1, y: 1}
+    m_Scale: {x: 0.46145833, y: 0.46145833}
     m_Translation: {x: 534, y: 443}
     m_MarginLeft: 0
     m_MarginRight: 0
@@ -827,12 +827,12 @@ MonoBehaviour:
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -534
-      y: -443
-      width: 1068
-      height: 886
+      x: -1157.2009
+      y: -960
+      width: 2314.4019
+      height: 1920
     m_MinimalGUI: 1
-  m_defaultScale: 1
+  m_defaultScale: 0.46145833
   m_LastWindowPixelSize: {x: 1068, y: 907}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
@@ -1407,7 +1407,7 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 2.5, y: 10, z: 2.5}
+    m_Target: {x: -1.5077362, y: -11.887386, z: 7.97727}
     speed: 2
     m_Value: {x: 2.5, y: 10, z: 2.5}
   m_RenderMode: 0
@@ -1456,11 +1456,11 @@ MonoBehaviour:
     m_gridOpacity: 0.5
     m_NearestPlaneToHandleMode: 0
   m_Rotation:
-    m_Target: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
+    m_Target: {x: 0.71523947, y: -0.11212603, z: 0.117994845, w: 0.67966175}
     speed: 2
     m_Value: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
   m_Size:
-    m_Target: 12.124355
+    m_Target: 9.560113
     speed: 2
     m_Value: 12.124355
   m_Ortho:
