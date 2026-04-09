@@ -1,0 +1,8 @@
+- Yes: This is a Unity project; agents would likely miss this if they assume a generic software repo.
+- Yes: The repo relies on the Unity Editor workflow (Assets/, ProjectSettings, etc.) rather than npm/yarn tasks.
+- Yes: There is no opencode.json in the repo (as seen from root); OpenCode-specific config may be missing here.
+- Yes: When guiding changes, prefer patch-based edits via Unity-specific tools (e.g., MCP) rather than direct edits to binary Unity assets.
+- Yes: CI/CD and pre-commit hooks, if present, are likely Unity/tooling-specific; do not rely on standard JS/Python test runners.
+- Yes: Investigation should start from the root README, then look for CI workflows (.github), and then search for Unity-related tooling.
+- Yes: Avoid committing large binary assets through arbitrary edits; respect Unity's import pipeline and repository ignore patterns.
+- Yes: If repo-local OpenCode config or conventions are missing, ask for missing config (e.g., opencode.json) or team guidelines before proceeding.
