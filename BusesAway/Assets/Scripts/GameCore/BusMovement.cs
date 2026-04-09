@@ -12,9 +12,12 @@ public class BusMovement : MonoBehaviour
     public BezierSpline spline;
     public float movementSpeed;
     public float rotationSpeed;
+    public float stopPointT;
 
-    private Vector3 startPoint;
-    private float normalizedT;
+    [Space]
+    [Header("DEBUG")]
+    public Vector3 startPoint;
+    public float normalizedT;
 
     private BusMovementPhase currentState = BusMovementPhase.SettingUp;
 

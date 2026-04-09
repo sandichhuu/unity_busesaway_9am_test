@@ -129,6 +129,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4127833}
   - component: {fileID: 4127832}
+  - component: {fileID: 4127834}
+  - component: {fileID: 4127835}
   m_Layer: 0
   m_Name: Lane_Blue
   m_TagString: Untagged
@@ -161,13 +163,53 @@ Transform:
   m_GameObject: {fileID: 4127831}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.52, y: -1.19, z: -7}
+  m_LocalPosition: {x: 1.52, y: -0.6, z: -8.2}
   m_LocalScale: {x: 1.2, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 942883038}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4127834
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4127831}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4127835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4127831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92aced8ca85318f4e86df8f41d7d096b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Grid
+  offset: {x: -0.35, y: 0, z: -4.7}
+  rows: 40
+  cols: 4
+  spacingX: 0.24
+  spacingY: 0.24
+  rowOffset: 0
+  slotPoints: []
 --- !u!1 &113791647
 GameObject:
   m_ObjectHideFlags: 0
@@ -316,7 +358,6 @@ GameObject:
   - component: {fileID: 128325685}
   - component: {fileID: 128325684}
   - component: {fileID: 128325683}
-  - component: {fileID: 128325682}
   m_Layer: 0
   m_Name: Layout
   m_TagString: Untagged
@@ -324,28 +365,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &128325682
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 128325681}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &128325683
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -566,6 +585,9 @@ MonoBehaviour:
   spline: {fileID: 458565428}
   movementSpeed: 0.01
   rotationSpeed: 10
+  stopPointT: 0.02646782
+  startPoint: {x: 0, y: 0, z: 0}
+  normalizedT: 0
 --- !u!1 &458565427
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,7 +930,6 @@ GameObject:
   - component: {fileID: 942883038}
   - component: {fileID: 942883041}
   - component: {fileID: 942883040}
-  - component: {fileID: 942883039}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -931,27 +952,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4127833}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &942883039
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 942883037}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &942883040
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1168,9 +1168,8 @@ GameObject:
   - component: {fileID: 1218725582}
   - component: {fileID: 1218725585}
   - component: {fileID: 1218725584}
-  - component: {fileID: 1218725583}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: WaitingRoomCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1184,34 +1183,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1218725581}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.5, z: -0.5}
+  m_LocalScale: {x: 10, y: 1, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1296725236}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1218725583
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1218725581}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1218725584
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1280,7 +1258,6 @@ GameObject:
   - component: {fileID: 1261521566}
   - component: {fileID: 1261521569}
   - component: {fileID: 1261521568}
-  - component: {fileID: 1261521567}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -1303,27 +1280,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1334202931}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1261521567
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1261521565}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1261521568
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1449,6 +1405,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1296725236}
   - component: {fileID: 1296725235}
+  - component: {fileID: 1296725237}
   m_Layer: 0
   m_Name: WaitingRoom
   m_TagString: Untagged
@@ -1468,8 +1425,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c92f31aa7cd1224b93c7346ea3c8ce5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaitingRoom
-  currentCount: 0
-  maxCapacity: 180
 --- !u!4 &1296725236
 Transform:
   m_ObjectHideFlags: 0
@@ -1479,13 +1434,31 @@ Transform:
   m_GameObject: {fileID: 1296725234}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: -0.5}
-  m_LocalScale: {x: 6.5, y: 1, z: 1.5}
+  m_LocalPosition: {x: -4.45, y: 0.1, z: -0.77}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1218725582}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1296725237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296725234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92aced8ca85318f4e86df8f41d7d096b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Grid
+  offset: {x: 0, y: 0, z: 0}
+  rows: 4
+  cols: 45
+  spacingX: 0.2
+  spacingY: 0.2
+  rowOffset: 0.1
+  slotPoints: []
 --- !u!1 &1316682416
 GameObject:
   m_ObjectHideFlags: 0
@@ -1612,6 +1585,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1334202931}
   - component: {fileID: 1334202930}
+  - component: {fileID: 1334202932}
+  - component: {fileID: 1334202933}
   m_Layer: 0
   m_Name: Lane_Red
   m_TagString: Untagged
@@ -1644,13 +1619,53 @@ Transform:
   m_GameObject: {fileID: 1334202929}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.52, y: -1.19, z: -7}
+  m_LocalPosition: {x: -1.52, y: -0.6, z: -8.2}
   m_LocalScale: {x: 1.2, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1261521566}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1334202932
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334202929}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1334202933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334202929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92aced8ca85318f4e86df8f41d7d096b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Grid
+  offset: {x: -0.35, y: 0, z: -4.7}
+  rows: 40
+  cols: 4
+  spacingX: 0.24
+  spacingY: 0.24
+  rowOffset: 0
+  slotPoints: []
 --- !u!1 &1366639319
 GameObject:
   m_ObjectHideFlags: 0
@@ -1685,7 +1700,6 @@ MonoBehaviour:
   - {fileID: 2059847023}
   - {fileID: 4127832}
   waitingRoom: {fileID: 1296725235}
-  groupSizePerTap: 3
 --- !u!4 &1366639321
 Transform:
   m_ObjectHideFlags: 0
@@ -1860,7 +1874,6 @@ GameObject:
   - component: {fileID: 1681836031}
   - component: {fileID: 1681836034}
   - component: {fileID: 1681836033}
-  - component: {fileID: 1681836032}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -1883,27 +1896,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2059847024}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1681836032
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1681836030}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1681836033
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2029,6 +2021,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2059847024}
   - component: {fileID: 2059847023}
+  - component: {fileID: 2059847025}
+  - component: {fileID: 2059847026}
   m_Layer: 0
   m_Name: Lane_Green
   m_TagString: Untagged
@@ -2061,13 +2055,53 @@ Transform:
   m_GameObject: {fileID: 2059847022}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.19, z: -7}
+  m_LocalPosition: {x: 0, y: -0.6, z: -8.2}
   m_LocalScale: {x: 1.2, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1681836031}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2059847025
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059847022}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2059847026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059847022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92aced8ca85318f4e86df8f41d7d096b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Grid
+  offset: {x: -0.35, y: 0, z: -4.7}
+  rows: 40
+  cols: 4
+  spacingX: 0.24
+  spacingY: 0.24
+  rowOffset: 0
+  slotPoints: []
 --- !u!1 &2130116037
 GameObject:
   m_ObjectHideFlags: 0
@@ -2164,6 +2198,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 113791650}
   - {fileID: 1366639321}
+  - {fileID: 1218725582}
   - {fileID: 1334202931}
   - {fileID: 2059847024}
   - {fileID: 4127833}

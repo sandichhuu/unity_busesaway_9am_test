@@ -1,22 +1,11 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
 
 public class GameManager : MonoBehaviour
 {
     public Lane[] lanes;
     public WaitingRoom waitingRoom;
-    public int groupSizePerTap = 3;
-    
-    void Start()
-    {
-        Lane[] foundLanes = FindObjectsOfType<Lane>();
-        lanes = new Lane[3];
-        foreach (var lane in foundLanes)
-        {
-            if (lane.laneIndex >= 0 && lane.laneIndex < 3)
-                lanes[lane.laneIndex] = lane;
-        }
-        waitingRoom = FindObjectOfType<WaitingRoom>();
-    }
     
     public void OnLaneTapped(int laneIndex)
     {
@@ -24,8 +13,47 @@ public class GameManager : MonoBehaviour
         
         Lane lane = lanes[laneIndex];
         if (!lane.HasPassengers) return;
-        
-        int removed = lane.RemovePassengers(groupSizePerTap);
-        waitingRoom.AddPassengers(removed);
+
+        //int removed = lane.RemovePassengers(groupSizePerTap);
+        //waitingRoom.AddPassengers(removed);
+        Debug.Log("LaneTapped");
+    }
+
+    private void Update()
+    {
+        //if (Input.touchCount > 0)
+        //{
+        //    Touch touch = Input.GetTouch(0);
+
+        //    if (touch.phase == TouchPhase.Began)
+        //    {
+        //        // Chuyển vị trí touch từ màn hình sang tia Ray
+        //        Ray ray = Camera.main.ScreenPointToRay(touch.position);
+        //        RaycastHit hit;
+
+        //        // Kiểm tra va chạm (Dùng Raycast cho 3D hoặc Raycast2D cho 2D)
+        //        if (Physics.Raycast(ray, out hit))
+        //        {
+        //            if (hit.transform.parent.TryGetComponent<Lane>(out var lane))
+        //            {
+        //                Debug.Log($"Touched lane: {lane.gameObject.name}");
+        //            }
+        //        }
+        //    }
+        //}
+
+        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+        {
+            Vector2 screenPos = Pointer.current.position.ReadValue();
+            Ray ray = Camera.main.ScreenPointToRay(screenPos);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.transform.TryGetComponent<Lane>(out var lane))
+                {
+                    Debug.Log($"Touched lane: {lane.gameObject.name}");
+                }
+            }
+        }
     }
 }

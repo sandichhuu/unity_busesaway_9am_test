@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum PassengerColor
@@ -9,6 +10,7 @@ public enum PassengerColor
 
 public class Lane : MonoBehaviour
 {
+    [Space]
     public int laneIndex;
     public PassengerColor color;
     public int passengerCount;
