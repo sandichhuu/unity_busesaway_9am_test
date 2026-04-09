@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using BusesAway.Bus;
 using BusesAway.Managers;
 using BusesAway.Core;
@@ -22,40 +23,46 @@ namespace BusesAway.Input
 
         private void Update()
         {
-            HandleTouchInput();
+            HandleInput();
         }
 
-        private void HandleTouchInput()
+        private void HandleInput()
         {
-            if (UnityEngine.Input.touchCount > 0)
-            {
-                Touch touch = UnityEngine.Input.GetTouch(0);
+            var touchscreen = Touchscreen.current;
+            var mouse = Mouse.current;
 
-                if (touch.phase == TouchPhase.Began)
+            if (touchscreen != null)
+            {
+                var touch = touchscreen.touches[0];
+                UnityEngine.InputSystem.TouchPhase phase = touch.phase.ReadValue();
+
+                if (phase == UnityEngine.InputSystem.TouchPhase.Began)
                 {
-                    touchStartPos = touch.position;
+                    touchStartPos = touch.position.ReadValue();
                     TrySelectBus();
                     isDragging = true;
                 }
-
-                if (touch.phase == TouchPhase.Ended && isDragging)
+                else if (phase == UnityEngine.InputSystem.TouchPhase.Ended && isDragging)
                 {
                     isDragging = false;
                     TryMove();
                     DeselectBus();
                 }
             }
-            else if (UnityEngine.Input.GetMouseButtonDown(0))
+            else if (mouse != null)
             {
-                touchStartPos = UnityEngine.Input.mousePosition;
-                TrySelectBus();
-                isDragging = true;
-            }
-            else if (UnityEngine.Input.GetMouseButtonUp(0) && isDragging)
-            {
-                isDragging = false;
-                TryMove();
-                DeselectBus();
+                if (mouse.leftButton.wasPressedThisFrame)
+                {
+                    touchStartPos = mouse.position.ReadValue();
+                    TrySelectBus();
+                    isDragging = true;
+                }
+                else if (mouse.leftButton.wasReleasedThisFrame && isDragging)
+                {
+                    isDragging = false;
+                    TryMove();
+                    DeselectBus();
+                }
             }
         }
 
@@ -75,11 +82,12 @@ namespace BusesAway.Input
 
         private Vector2 GetInputPosition()
         {
-            if (UnityEngine.Input.touchCount > 0)
+            var touchscreen = Touchscreen.current;
+            if (touchscreen != null)
             {
-                return UnityEngine.Input.GetTouch(0).position;
+                return touchscreen.touches[0].position.ReadValue();
             }
-            return UnityEngine.Input.mousePosition;
+            return Mouse.current.position.ReadValue();
         }
 
         private void SelectBus(BusController bus)
