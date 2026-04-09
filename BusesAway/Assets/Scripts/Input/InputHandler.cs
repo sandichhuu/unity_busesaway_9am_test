@@ -22,19 +22,36 @@ namespace BusesAway.Input
 
         private void Update()
         {
-            HandleMouseInput();
+            HandleTouchInput();
         }
 
-        private void HandleMouseInput()
+        private void HandleTouchInput()
         {
-            if (UnityEngine.Input.GetMouseButtonDown(0))
+            if (UnityEngine.Input.touchCount > 0)
+            {
+                Touch touch = UnityEngine.Input.GetTouch(0);
+
+                if (touch.phase == TouchPhase.Began)
+                {
+                    touchStartPos = touch.position;
+                    TrySelectBus();
+                    isDragging = true;
+                }
+
+                if (touch.phase == TouchPhase.Ended && isDragging)
+                {
+                    isDragging = false;
+                    TryMove();
+                    DeselectBus();
+                }
+            }
+            else if (UnityEngine.Input.GetMouseButtonDown(0))
             {
                 touchStartPos = UnityEngine.Input.mousePosition;
                 TrySelectBus();
                 isDragging = true;
             }
-
-            if (UnityEngine.Input.GetMouseButtonUp(0) && isDragging)
+            else if (UnityEngine.Input.GetMouseButtonUp(0) && isDragging)
             {
                 isDragging = false;
                 TryMove();
@@ -44,7 +61,8 @@ namespace BusesAway.Input
 
         private void TrySelectBus()
         {
-            Ray ray = mainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
+            Vector2 inputPos = GetInputPosition();
+            Ray ray = mainCamera.ScreenPointToRay(inputPos);
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, busLayer))
             {
                 BusController bus = hit.collider.GetComponent<BusController>();
@@ -53,6 +71,15 @@ namespace BusesAway.Input
                     SelectBus(bus);
                 }
             }
+        }
+
+        private Vector2 GetInputPosition()
+        {
+            if (UnityEngine.Input.touchCount > 0)
+            {
+                return UnityEngine.Input.GetTouch(0).position;
+            }
+            return UnityEngine.Input.mousePosition;
         }
 
         private void SelectBus(BusController bus)
@@ -79,7 +106,7 @@ namespace BusesAway.Input
         {
             if (selectedBus == null) return;
 
-            Vector2 touchEndPos = UnityEngine.Input.mousePosition;
+            Vector2 touchEndPos = GetInputPosition();
             Vector2 swipeDelta = touchEndPos - touchStartPos;
 
             if (swipeDelta.magnitude < swipeThreshold)

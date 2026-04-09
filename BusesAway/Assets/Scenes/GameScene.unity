@@ -562,7 +562,7 @@ MonoBehaviour:
   swipeThreshold: 50
   busLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 256
 --- !u!1 &2032725882
 GameObject:
   m_ObjectHideFlags: 0
