@@ -4,10 +4,10 @@ using System.Threading;
 
 public static class IdGenerator
 {
+    private static long lastId = DateTime.UtcNow.Ticks;
+    
     public static IEnumerable<string> Generate()
     {
-        long lastId = DateTime.UtcNow.Ticks;
-
         while (true)
         {
             long currentId = DateTime.UtcNow.Ticks;
