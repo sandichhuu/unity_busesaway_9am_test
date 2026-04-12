@@ -13,6 +13,7 @@ namespace BA.GameStates
         private LaneManager laneManager;
         private LevelManager levelManager;
         private GameStateManager gameStateManager;
+        private BusManager busManager;
         private BusStationBehaviour busStationBehaviour;
 
         private List<PassengerBehaviour> passengersOnStation = new();
@@ -27,6 +28,7 @@ namespace BA.GameStates
             this.levelManager = gameManager.levelManager;
             this.laneManager = gameManager.GetLaneManager();
             this.gameStateManager = gameManager.stateManager;
+            this.busManager = gameManager.GetBusManager();
             this.busStationBehaviour = Object.FindAnyObjectByType<BusStationBehaviour>();
             this.stationPoints = this.busStationBehaviour.GetGrid().GetShuffled();
         }
@@ -59,8 +61,8 @@ namespace BA.GameStates
                 if (passenger != null)
                 {
                     passenger.transform.position = Vector3.MoveTowards(passenger.transform.position,
-                                                                  this.busyStationPoints[i],
-                                                                  Config.DEFAULT_MOVEMENT_SPEED * Time.deltaTime);
+                                                                       this.busyStationPoints[i],
+                                                                       Config.DEFAULT_MOVEMENT_SPEED * Time.deltaTime);
                 }
             }
         }
