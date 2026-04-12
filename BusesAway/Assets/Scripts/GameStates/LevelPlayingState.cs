@@ -12,22 +12,21 @@ namespace BA.GameStates
     {
         private LaneManager laneManager;
         private LevelManager levelManager;
+        private GameStateManager gameStateManager;
         private BusStationBehaviour busStationBehaviour;
-        private UpdateSystem updateSystem;
 
         private List<PassengerBehaviour> passengersOnStation = new();
         private List<Vector3> busyStationPoints = new();
         private List<Vector3> stationPoints = new();
-        private int currentStationPointIndex = 0;
 
         private bool isGameover;
 
         void IGameState.OnEnter()
         {
             var gameManager = Object.FindAnyObjectByType<GameManager>();
-            this.updateSystem = gameManager.updateSystem;
             this.levelManager = gameManager.levelManager;
             this.laneManager = gameManager.GetLaneManager();
+            this.gameStateManager = gameManager.stateManager;
             this.busStationBehaviour = Object.FindAnyObjectByType<BusStationBehaviour>();
             this.stationPoints = this.busStationBehaviour.GetGrid().GetShuffled();
         }
@@ -38,6 +37,10 @@ namespace BA.GameStates
 
         void IGameState.OnFixedUpdate(float fdt)
         {
+            if (this.isGameover)
+                return;
+
+            UpdateInteraction();
         }
 
         void IGameState.OnUpdate(float dt)
@@ -45,7 +48,6 @@ namespace BA.GameStates
             if (this.isGameover)
                 return;
 
-            UpdateInteraction();
             UpdatePassengerMovement(dt);
         }
 
@@ -115,6 +117,7 @@ namespace BA.GameStates
         {
             await UniTask.Delay(2000);
             Debug.Log("You Lose");
+            this.gameStateManager.ChangeState(new LevelGameoverState());
         }
     }
 }
