@@ -30,9 +30,9 @@ public class BusMovement : MonoBehaviour
     void Update()
     {
         if (this.currentState == BusMovementPhase.SettingUp) {
-            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position,
-                                                                         this.startPoint,
-                                                                         this.movementSpeed * 100 * Time.deltaTime);
+            this.transform.position = Vector3.MoveTowards(this.transform.position,
+                                                          this.startPoint,
+                                                          this.movementSpeed * 100 * Time.deltaTime);
 
             var lookPos = this.startPoint - this.transform.position;
             lookPos.y = 0;
