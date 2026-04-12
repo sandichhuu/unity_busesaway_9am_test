@@ -89,4 +89,9 @@ public class Grid : MonoBehaviour
     {
         return this.slotPoints.Count;
     }
+
+    public List<Vector3> GetShuffled()
+    {
+        return this.slotPoints.GetShuffled();
+    }
 }
