@@ -45,6 +45,26 @@ namespace BA.GameStates
             if (this.isGameover)
                 return;
 
+            UpdateInteraction();
+            UpdatePassengerMovement(dt);
+        }
+
+        private void UpdatePassengerMovement(float dt)
+        {
+            for (var i = this.passengersOnStation.Count - 1; i >= 0; i--)
+            {
+                var passenger = this.passengersOnStation[i];
+                if (passenger != null)
+                {
+                    passenger.transform.position = Vector3.MoveTowards(passenger.transform.position,
+                                                                  this.busyStationPoints[i],
+                                                                  Config.DEFAULT_MOVEMENT_SPEED * Time.deltaTime);
+                }
+            }
+        }
+
+        private void UpdateInteraction()
+        {
             if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
             {
                 Vector2 screenPos = Pointer.current.position.ReadValue();
@@ -57,14 +77,6 @@ namespace BA.GameStates
                         OnLaneSelected(lane);
                     }
                 }
-            }
-        }
-
-        private void UpdatePassengerMovement(float dt)
-        {
-            for (var i = this.passengersOnStation.Count - 1; i >= 0; i--)
-            {
-
             }
         }
 

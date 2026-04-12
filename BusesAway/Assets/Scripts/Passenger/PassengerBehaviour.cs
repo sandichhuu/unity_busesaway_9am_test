@@ -3,7 +3,7 @@ using UnityEngine.Pool;
 
 namespace BA.Passenger
 {
-    public class PassengerBehaviour : MonoBehaviour
+    public class PassengerBehaviour : MonoBehaviour, IHaveId
     {
         private MeshRenderer meshRenderer;
         private ObjectPool<PassengerBehaviour> pool;
