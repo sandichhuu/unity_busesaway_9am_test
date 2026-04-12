@@ -11,6 +11,7 @@ namespace BA.Level
 
         public int stationCapacity;
         public int maxSpawnEachBlock;
+        public int maxBusAtSameTime;
 
         public Dictionary<PassengerColor, int> lane1Config; // Key: Color, Value: SpawnAmountMultiplier
         public Dictionary<PassengerColor, int> lane2Config; // Key: Color, Value: SpawnAmountMultiplier
