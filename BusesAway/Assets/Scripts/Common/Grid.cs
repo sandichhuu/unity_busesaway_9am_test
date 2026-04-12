@@ -17,15 +17,15 @@ public class Grid : MonoBehaviour
         var pos = this.transform.position;
         var y = pos.y * -1f;
 
-        for (int r = 0; r < rows; r++)
+        for (int r = 0; r < this.rows; r++)
         {
-            for (int c = 0; c < cols; c++)
+            for (int c = 0; c < this.cols; c++)
             {
-                float xOffset = (r % 2 != 0) ? rowOffset : 0f;
+                float xOffset = (r % 2 != 0) ? this.rowOffset : 0f;
                 Vector3 newPos = new Vector3(
-                    c * spacingX + xOffset,
+                    c * this.spacingX + xOffset,
                     y,
-                    r * spacingY
+                    r * this.spacingY
                 );
 
                 this.slotPoints.Add(this.transform.position + pos);
@@ -38,15 +38,15 @@ public class Grid : MonoBehaviour
         var pos = this.transform.position;
         var y = pos.y * -1f;
 
-        for (int r = 0; r < rows; r++)
+        for (int r = 0; r < this.rows; r++)
         {
-            for (int c = 0; c < cols; c++)
+            for (int c = 0; c < this.cols; c++)
             {
-                float xOffset = (r % 2 != 0) ? rowOffset : 0f;
+                float xOffset = (r % 2 != 0) ? this.rowOffset : 0f;
                 Vector3 newPos = new Vector3(
-                    c * spacingX + xOffset,
+                    c * this.spacingX + xOffset,
                     y,
-                    r * spacingY
+                    r * this.spacingY
                 );
 
                 Gizmos.DrawCube(pos + newPos + this.offset, Vector3.one * 0.1f);

@@ -128,9 +128,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4127833}
-  - component: {fileID: 4127832}
   - component: {fileID: 4127834}
   - component: {fileID: 4127835}
+  - component: {fileID: 4127836}
   m_Layer: 0
   m_Name: Lane_2
   m_TagString: Untagged
@@ -138,22 +138,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!114 &4127832
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4127831}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e44959695b80faa429806bd108d32ef6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Lane
-  laneIndex: 2
-  color: 2
-  passengerCount: 10
-  maxPassengers: 20
 --- !u!4 &4127833
 Transform:
   m_ObjectHideFlags: 0
@@ -210,6 +194,18 @@ MonoBehaviour:
   spacingY: 0.24
   rowOffset: 0
   slotPoints: []
+--- !u!114 &4127836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4127831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 786ca36a388a12546aa168ba0db73669, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LaneBehaviour
 --- !u!1 &113791647
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,9 +2035,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1334202931}
-  - component: {fileID: 1334202930}
   - component: {fileID: 1334202932}
   - component: {fileID: 1334202933}
+  - component: {fileID: 1334202934}
   m_Layer: 0
   m_Name: Lane_0
   m_TagString: Untagged
@@ -2049,22 +2045,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!114 &1334202930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1334202929}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e44959695b80faa429806bd108d32ef6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Lane
-  laneIndex: 0
-  color: 0
-  passengerCount: 10
-  maxPassengers: 20
 --- !u!4 &1334202931
 Transform:
   m_ObjectHideFlags: 0
@@ -2121,6 +2101,18 @@ MonoBehaviour:
   spacingY: 0.24
   rowOffset: 0
   slotPoints: []
+--- !u!114 &1334202934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334202929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 786ca36a388a12546aa168ba0db73669, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LaneBehaviour
 --- !u!1 &1366639319
 GameObject:
   m_ObjectHideFlags: 0
@@ -2150,11 +2142,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4463a8d65728d34b9c7c51926c00c31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  lanes:
-  - {fileID: 1334202930}
-  - {fileID: 2059847023}
-  - {fileID: 4127832}
-  waitingRoom: {fileID: 1296725235}
+  passengerManager:
+    factory:
+      passengerMaterials:
+        _serializedList:
+        - Key: 0
+          Value: {fileID: 2100000, guid: a84b9fe703720f640900a382898e650e, type: 2}
+        - Key: 1
+          Value: {fileID: 2100000, guid: b0d4a68f81ce88148a443934725a5664, type: 2}
+        - Key: 2
+          Value: {fileID: 2100000, guid: dcc5391083510b3469374a22a4a49faf, type: 2}
+        - Key: 3
+          Value: {fileID: 2100000, guid: 6efed481748f7f14398655937848ae89, type: 2}
+        - Key: 4
+          Value: {fileID: 2100000, guid: 8edb083bd2872724cb84e131780d0f15, type: 2}
+      passengerPrefab: {fileID: -810012458371005193, guid: 6f51da251fbf02f4aa4bca7c4ce1b61b, type: 3}
+  laneManager:
+    lanes:
+    - {fileID: 1334202934}
+    - {fileID: 2059847027}
+    - {fileID: 4127836}
 --- !u!4 &1366639321
 Transform:
   m_ObjectHideFlags: 0
@@ -2745,9 +2752,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2059847024}
-  - component: {fileID: 2059847023}
   - component: {fileID: 2059847025}
   - component: {fileID: 2059847026}
+  - component: {fileID: 2059847027}
   m_Layer: 0
   m_Name: Lane_1
   m_TagString: Untagged
@@ -2755,22 +2762,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!114 &2059847023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2059847022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e44959695b80faa429806bd108d32ef6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Lane
-  laneIndex: 1
-  color: 1
-  passengerCount: 10
-  maxPassengers: 20
 --- !u!4 &2059847024
 Transform:
   m_ObjectHideFlags: 0
@@ -2827,6 +2818,18 @@ MonoBehaviour:
   spacingY: 0.24
   rowOffset: 0
   slotPoints: []
+--- !u!114 &2059847027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059847022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 786ca36a388a12546aa168ba0db73669, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LaneBehaviour
 --- !u!1 &2130116037
 GameObject:
   m_ObjectHideFlags: 0
