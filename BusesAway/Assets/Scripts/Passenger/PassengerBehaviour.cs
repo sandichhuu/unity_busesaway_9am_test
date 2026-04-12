@@ -10,12 +10,13 @@ namespace BA.Passenger
 
         [SerializeField] private PassengerColor passengerColor;
 
-        public void Setup(ObjectPool<PassengerBehaviour> pool, PassengerColor passengerColor, Material material)
+        public void Setup(ObjectPool<PassengerBehaviour> pool, PassengerColor passengerColor, Material material, Vector3 initialPosition)
         {
             this.pool = pool;
             this.meshRenderer = GetComponent<MeshRenderer>();
             this.meshRenderer.materials = new Material[] { material };
             this.passengerColor = passengerColor;
+            this.transform.position = initialPosition;
         }
 
         public PassengerColor GetColor()

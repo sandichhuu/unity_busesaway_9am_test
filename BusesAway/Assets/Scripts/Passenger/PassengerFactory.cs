@@ -29,8 +29,7 @@ namespace BA.Passenger
         public PassengerBehaviour CreatePassenger(PassengerColor color, Vector3 position)
         {
             var passenger = this.pool.Get();
-            passenger.Setup(this.pool, color, this.passengerMaterials[color]);
-            passenger.transform.position = position;
+            passenger.Setup(this.pool, color, this.passengerMaterials[color], position);
             return passenger;
         }
 

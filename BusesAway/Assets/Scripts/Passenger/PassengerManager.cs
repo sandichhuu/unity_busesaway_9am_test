@@ -16,7 +16,6 @@ namespace BA.Passenger
             var passengerBlocks = lane.GetPassengerBlocks();
             var grid = lane.GetGrid();
             var spawnCount = 0;
-            //for (var i = spawnQueue.Count - 1; i >= 0; i--)
             for (var i = 0; i < spawnQueue.Count; i++)
             {
                 var block = spawnQueue[i];
@@ -35,7 +34,9 @@ namespace BA.Passenger
 
         private PassengerBehaviour CreatePassenger(PassengerColor color, Vector3 position)
         {
-            return this.factory.CreatePassenger(color, position);
+            var passenger = this.factory.CreatePassenger(color, position);
+            passenger.gameObject.name = $"Passenger[{passenger.GetUUID()}]";
+            return passenger;
         }
     }
 }
