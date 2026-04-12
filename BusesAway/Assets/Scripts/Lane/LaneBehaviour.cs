@@ -22,15 +22,6 @@ namespace BA.Lane
             return this.grid;
         }
 
-        public void OnLaneSelected()
-        {
-            if (this.passengerBlocks.Count > 0)
-            {
-                var firstBlock = this.passengerBlocks.Dequeue();
-                Debug.Log(firstBlock.ToString());
-            }
-        }
-
         public ref Queue<PassengerBlock> GetPassengerBlocks()
         {
             return ref this.passengerBlocks;
