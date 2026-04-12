@@ -38,10 +38,10 @@ public class UpdateSystem
 
         if (obj is ILoop loop)
         {
-            if (!this.loopDict.ContainsKey(loop.id))
+            if (!this.loopDict.ContainsKey(loop.GetUUID()))
             {
-                this.loopDict[loop.id] = this.loopList.Count;
-                this.loopList.Add(new LoopNode<ILoop> { Id = loop.id, Action = loop });
+                this.loopDict[loop.GetUUID()] = this.loopList.Count;
+                this.loopList.Add(new LoopNode<ILoop> { Id = loop.GetUUID(), Action = loop });
                 this.currentUpdateSlices = GetSliceCount(this.loopList.Count);
             }
 
@@ -49,10 +49,10 @@ public class UpdateSystem
 
         if (obj is IFixedLoop fixedLoop)
         {
-            if (!this.fixedLoopDict.ContainsKey(fixedLoop.id))
+            if (!this.fixedLoopDict.ContainsKey(fixedLoop.GetUUID()))
             {
-                this.fixedLoopDict[fixedLoop.id] = this.fixedLoopList.Count;
-                this.fixedLoopList.Add(new LoopNode<IFixedLoop> { Id = fixedLoop.id, Action = fixedLoop });
+                this.fixedLoopDict[fixedLoop.GetUUID()] = this.fixedLoopList.Count;
+                this.fixedLoopList.Add(new LoopNode<IFixedLoop> { Id = fixedLoop.GetUUID(), Action = fixedLoop });
                 this.currentFixedUpdateSlices = GetSliceCount(this.fixedLoopList.Count);
             }
         }
@@ -62,8 +62,8 @@ public class UpdateSystem
     {
         if (obj is IHaveId haveId)
         {
-            RemoveFromList(this.loopList, this.loopDict, haveId.id);
-            RemoveFromList(this.fixedLoopList, this.fixedLoopDict, haveId.id);
+            RemoveFromList(this.loopList, this.loopDict, haveId.GetUUID());
+            RemoveFromList(this.fixedLoopList, this.fixedLoopDict, haveId.GetUUID());
             this.currentUpdateSlices = GetSliceCount(this.loopList.Count);
             this.currentFixedUpdateSlices = GetSliceCount(this.fixedLoopList.Count);
         }

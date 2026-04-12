@@ -194,6 +194,8 @@ MonoBehaviour:
   spacingY: 0.24
   rowOffset: 0
   slotPoints: []
+  flipX: 0
+  flipY: 1
 --- !u!114 &4127836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -604,6 +606,8 @@ MonoBehaviour:
   spacingY: 0.14
   rowOffset: 0
   slotPoints: []
+  flipX: 0
+  flipY: 0
 --- !u!1 &404570656
 GameObject:
   m_ObjectHideFlags: 0
@@ -1855,7 +1859,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1296725236}
-  - component: {fileID: 1296725235}
   - component: {fileID: 1296725237}
   m_Layer: 0
   m_Name: WaitingRoom
@@ -1864,18 +1867,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!114 &1296725235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1296725234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c92f31aa7cd1224b93c7346ea3c8ce5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WaitingRoom
 --- !u!4 &1296725236
 Transform:
   m_ObjectHideFlags: 0
@@ -1910,6 +1901,8 @@ MonoBehaviour:
   spacingY: 0.2
   rowOffset: 0.1
   slotPoints: []
+  flipX: 0
+  flipY: 1
 --- !u!1 &1316682416
 GameObject:
   m_ObjectHideFlags: 0
@@ -2101,6 +2094,8 @@ MonoBehaviour:
   spacingY: 0.24
   rowOffset: 0
   slotPoints: []
+  flipX: 0
+  flipY: 1
 --- !u!114 &1334202934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2818,6 +2813,8 @@ MonoBehaviour:
   spacingY: 0.24
   rowOffset: 0
   slotPoints: []
+  flipX: 0
+  flipY: 1
 --- !u!114 &2059847027
 MonoBehaviour:
   m_ObjectHideFlags: 0

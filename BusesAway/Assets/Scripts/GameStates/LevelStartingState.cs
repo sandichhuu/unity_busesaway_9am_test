@@ -1,18 +1,44 @@
-public class LevelStartingState : IGameState
+using BA.Lane;
+using BA.Level;
+using BA.Passenger;
+
+namespace BA.GameStates
 {
-    void IGameState.OnEnter()
+    public class LevelStartingState : IGameState
     {
-    }
+        private readonly GameManager gameManager;
+        private readonly PassengerManager passengerManager;
+        private readonly LaneManager laneManager;
+        private readonly LevelManager levelManager;
 
-    void IGameState.OnExit()
-    {
-    }
+        public LevelStartingState()
+        {
+            this.gameManager = UnityEngine.Object.FindAnyObjectByType<GameManager>();
+            this.passengerManager = this.gameManager.GetPassengerManager();
+            this.laneManager = this.gameManager.GetLaneManager();
+            this.levelManager = this.gameManager.levelManager;
+        }
 
-    void IGameState.OnFixedUpdate(float fdt)
-    {
-    }
+        void IGameState.OnEnter()
+        {
+            var levelConfig = this.levelManager.GetCurrentLevelConfig();
+            var spawnQueues = levelConfig.spawnQueues;
 
-    void IGameState.OnUpdate(float dt)
-    {
+            this.passengerManager.SpawnPassengerBlock(this.laneManager.GetLane(0), spawnQueues[0]);
+            this.passengerManager.SpawnPassengerBlock(this.laneManager.GetLane(1), spawnQueues[1]);
+            this.passengerManager.SpawnPassengerBlock(this.laneManager.GetLane(2), spawnQueues[2]);
+        }
+
+        void IGameState.OnExit()
+        {
+        }
+
+        void IGameState.OnFixedUpdate(float fdt)
+        {
+        }
+
+        void IGameState.OnUpdate(float dt)
+        {
+        }
     }
 }

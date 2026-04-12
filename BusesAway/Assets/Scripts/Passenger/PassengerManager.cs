@@ -1,4 +1,7 @@
+using BA.Data;
+using BA.Lane;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BA.Passenger
@@ -8,9 +11,31 @@ namespace BA.Passenger
     {
         [SerializeField] private PassengerFactory factory;
 
-        public PassengerFactory GetFactory()
+        public void SpawnPassengerBlock(LaneBehaviour lane, List<PassengerBlockData> spawnQueue)
         {
-            return this.factory;
+            var passengerBlocks = lane.GetPassengerBlocks();
+            var grid = lane.GetGrid();
+            var spawnCount = 0;
+            //for (var i = spawnQueue.Count - 1; i >= 0; i--)
+            for (var i = 0; i < spawnQueue.Count; i++)
+            {
+                var block = spawnQueue[i];
+                var passengers = new List<PassengerBehaviour>();
+                for (var j = 0; j < block.amount; j++)
+                {
+                    if (spawnCount < grid.GetLength())
+                        passengers.Add(CreatePassenger(block.color, grid[spawnCount++]));
+                }
+                passengerBlocks.Enqueue(new() { color = block.color, passengers = passengers });
+
+                if (spawnCount >= grid.GetLength())
+                    break;
+            }
+        }
+
+        private PassengerBehaviour CreatePassenger(PassengerColor color, Vector3 position)
+        {
+            return this.factory.CreatePassenger(color, position);
         }
     }
 }
