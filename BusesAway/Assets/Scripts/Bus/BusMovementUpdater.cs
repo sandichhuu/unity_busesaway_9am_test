@@ -17,6 +17,7 @@ namespace BA.Bus
 
         public void Setup()
         {
+            this.spline = FindAnyObjectByType<BezierSpline>();
             this.startPoint = this.spline.FindNearestPointTo(this.transform.position, out this.normalizedT);
         }
 
@@ -29,7 +30,7 @@ namespace BA.Bus
         {
             this.transform.position = Vector3.MoveTowards(this.transform.position,
                                                               this.startPoint,
-                                                              this.movementSpeed * 100 * dt);
+                                                              this.movementSpeed * Config.BUS_START_MOVE_SPEED * dt);
 
             var lookPos = this.startPoint - this.transform.position;
             lookPos.y = 0;

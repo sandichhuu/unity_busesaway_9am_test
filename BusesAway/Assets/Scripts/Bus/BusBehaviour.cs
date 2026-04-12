@@ -4,6 +4,13 @@ using UnityEngine.Pool;
 
 namespace BA.Bus
 {
+    public enum BusState
+    {
+        Idle,
+        Starting,
+        Moving
+    }
+
     public class BusBehaviour : MonoBehaviour, IHaveId
     {
         private MeshRenderer meshRenderer;
@@ -11,6 +18,7 @@ namespace BA.Bus
 
         [SerializeField] private BusMovementUpdater busMovement;
         [SerializeField] private PassengerColor passengerColor;
+        [SerializeField] public BusState currentBusState;
 
         public int capacity;
         public List<int> onboardPassengers = new List<int>();
@@ -24,6 +32,7 @@ namespace BA.Bus
             this.meshRenderer.materials = new Material[] { material };
             this.passengerColor = passengerColor;
             this.transform.position = initialPosition;
+            this.currentBusState = BusState.Idle;
         }
 
         public bool BoardPassengers(int count)
@@ -49,6 +58,16 @@ namespace BA.Bus
         public BusMovementUpdater GetBusMovementUpdater()
         {
             return this.busMovement;
+        }
+
+        public BusState GetCurrentState()
+        {
+            return this.currentBusState;
+        }
+
+        public void SetCurrentState(BusState busState)
+        {
+            this.currentBusState = busState;
         }
     }
 }

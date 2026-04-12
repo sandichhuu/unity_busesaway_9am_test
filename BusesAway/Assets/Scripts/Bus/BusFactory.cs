@@ -22,7 +22,7 @@ namespace BA.Bus
                  actionOnDestroy: OnDestroyItem,
                  collectionCheck: true,
                  defaultCapacity: 4,
-                 maxSize: 10000
+                 maxSize: 10
              );
         }
 

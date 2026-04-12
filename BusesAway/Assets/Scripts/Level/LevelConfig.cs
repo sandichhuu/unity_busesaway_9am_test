@@ -23,6 +23,7 @@ namespace BA.Level
         {
             this.stationCapacity = 100;
             this.maxSpawnEachBlock = 12; // Higher mean more hard, because player have to calculate before tap.
+            this.maxBusAtSameTime = 2;
 
             this.lane1Config = new()
             {

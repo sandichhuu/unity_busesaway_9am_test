@@ -9,10 +9,11 @@ public class BusManager
 
     private List<BusBehaviour> buses = new();
 
-    private BusBehaviour CreateBus(PassengerColor color, Vector3 position)
+    public BusBehaviour CreateBus(PassengerColor color, Vector3 position)
     {
         var bus = this.factory.CreateBus(color, position);
         bus.gameObject.name = $"Bus[{bus.GetUUID()}]";
+        bus.GetBusMovementUpdater().Setup();
         this.buses.Add(bus);
         return bus;
     }

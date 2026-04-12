@@ -13,5 +13,10 @@ namespace BA.Lane
         {
             return this.lanes[index];
         }
+
+        public ref LaneBehaviour[] AllLanes()
+        {
+            return ref this.lanes;
+        }
     }
 }
