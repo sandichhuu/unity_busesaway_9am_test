@@ -6,6 +6,8 @@ namespace BA.GameStates
     {
         void IGameState.OnEnter()
         {
+            var winCanvas = Object.FindAnyObjectByType<UI_Win>();
+            winCanvas.Show();
         }
 
         void IGameState.OnExit()

@@ -5,6 +5,9 @@ namespace BA.Lane
 {
     public class LaneBehaviour : MonoBehaviour, ISetup
     {
+        [SerializeField] private int laneIndex;
+        [SerializeField] private int missingRow;
+
         private Grid grid;
         private Queue<PassengerBlock> passengerBlocks = new();
 
@@ -25,6 +28,21 @@ namespace BA.Lane
         public ref Queue<PassengerBlock> GetPassengerBlocks()
         {
             return ref this.passengerBlocks;
+        }
+
+        public int GetLaneIndex()
+        {
+            return this.laneIndex;
+        }
+
+        public void SetMissingRow(int row)
+        {
+            this.missingRow = row;
+        }
+
+        public int GetMissingRow()
+        {
+            return this.missingRow;
         }
     }
 }

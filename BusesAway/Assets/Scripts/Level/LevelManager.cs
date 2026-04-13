@@ -7,6 +7,7 @@ namespace BA.Level
 
         public void LoadLevel(int levelIndex)
         {
+            //TODO: Load level from file
             this.currentLevelIndex = levelIndex;
             this.currentLevelConfig = new LevelConfig();
             this.currentLevelConfig.RegenerateSpawnQueues();

@@ -40,7 +40,7 @@ namespace BA.Bus
 
         public void UpdateMovementSpine(float dt)
         {
-            var targetPoint = this.map.GetSplinePath().MoveAlongSpline(ref this.normalizedT, -this.movementSpeed);
+            var targetPoint = this.map.GetSplinePath().MoveAlongSpline(ref this.normalizedT, -this.movementSpeed * Config.BUS_MOVE_SPEED);
             var lookPos = targetPoint - this.transform.position;
             lookPos.y = 0;
             var rotation = Quaternion.LookRotation(lookPos);

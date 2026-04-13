@@ -22,7 +22,7 @@ namespace BA.Passenger
                  actionOnDestroy: OnDestroyItem,
                  collectionCheck: true,
                  defaultCapacity: 100,
-                 maxSize: 10000
+                 maxSize: 500
              );
         }
 

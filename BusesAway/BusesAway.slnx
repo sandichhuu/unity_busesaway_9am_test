@@ -5,10 +5,10 @@
   <Project Path="AYellowpaper.SerializedCollections.csproj" />
   <Project Path="UniTask.Linq.csproj" />
   <Project Path="UniTask.Addressables.csproj" />
+  <Project Path="Assembly-CSharp-firstpass.csproj" />
   <Project Path="AYellowpaper.SerializedCollections.Editor.csproj" />
   <Project Path="UniTask.TextMeshPro.csproj" />
   <Project Path="BezierSolution.Editor.csproj" />
-  <Project Path="Assembly-CSharp-firstpass.csproj" />
   <Project Path="UniTask.Editor.csproj" />
   <Project Path="UniTask.DOTween.csproj" />
 </Solution>

@@ -30,6 +30,11 @@ namespace BA.GameStates
         private float spawnBusDelayInterval = 0f;
         private List<PassengerBehaviour> readyEnterBusBuffer = new();
 
+        private int score;
+        private int maxScore;
+
+        private List<PassengerColor> busesSpawnConfig = new();
+
         void IGameState.OnEnter()
         {
             var gameManager = Object.FindAnyObjectByType<GameManager>();
@@ -40,8 +45,41 @@ namespace BA.GameStates
             this.busStationBehaviour = Object.FindAnyObjectByType<BusStationBehaviour>();
             this.map = Object.FindAnyObjectByType<MapBehaviour>();
             this.stationPoints = this.busStationBehaviour.GetGrid().GetShuffled();
+            this.score = 0;
+            InitSpawnBusQueue();
+            //GenerateBusCommon();
+        }
 
-            GenerateBusCommon();
+        private void InitSpawnBusQueue()
+        {
+            foreach (var kv in this.levelManager.GetCurrentLevelConfig().lane1Config)
+            {
+                for (var i = 0; i < kv.Value; i++)
+                {
+                    this.busesSpawnConfig.Add(kv.Key);
+                    this.maxScore += 32;
+                }
+            }
+
+            foreach (var kv in this.levelManager.GetCurrentLevelConfig().lane2Config)
+            {
+                for (var i = 0; i < kv.Value; i++)
+                {
+                    this.busesSpawnConfig.Add(kv.Key);
+                    this.maxScore += 32;
+                }
+            }
+
+            foreach (var kv in this.levelManager.GetCurrentLevelConfig().lane3Config)
+            {
+                for (var i = 0; i < kv.Value; i++)
+                {
+                    this.busesSpawnConfig.Add(kv.Key);
+                    this.maxScore += 32;
+                }
+            }
+
+            this.busesSpawnConfig.Shuffle();
         }
 
         void IGameState.OnExit()
@@ -62,7 +100,59 @@ namespace BA.GameStates
             UpdateInteraction();
             UpdateSpawnBus(dt);
             UpdateBuses(dt);
-            UpdatePassengerMovement(dt);
+            UpdatePassengers(dt);
+            UpdateMissingRows(dt);
+            UpdatePassengerMoveToBus(dt);
+        }
+
+        private void UpdatePassengers(float dt)
+        {
+            UpdatePassengerMoveUp(dt);
+        }
+
+        private void UpdatePassengerMoveUp(float dt)
+        {
+            var allLanes = this.laneManager.AllLanes();
+            for (var i = 0; i < allLanes.Length; i++)
+            {
+                var lane = allLanes[i];
+                var passengerBlocks = lane.GetPassengerBlocks().ToList();
+                for (var j = 0; j < passengerBlocks.Count; j++)
+                {
+                    var passengerBlock = passengerBlocks[j];
+                    for (var k = 0; k < passengerBlock.passengers.Count; k++)
+                    {
+                        var passenger = passengerBlock.passengers[k];
+                        passenger.OnUpdate(dt);
+                    }
+                }
+            }
+        }
+
+        private void UpdateMissingRows(float dt)
+        {
+            var allLanes = this.laneManager.AllLanes();
+            for (var i = 0; i < allLanes.Length; i++)
+            {
+                var lane = allLanes[i];
+                var missingRow = lane.GetMissingRow();
+                if (missingRow > 0)
+                {
+                    var passengerBlocks = lane.GetPassengerBlocks().ToList();
+                    for (var j = 0; j < passengerBlocks.Count; j++)
+                    {
+                        var passengerBlock = passengerBlocks[j];
+                        for (var k = 0; k < passengerBlock.passengers.Count; k++)
+                        {
+                            var passenger = passengerBlock.passengers[k];
+                            var r = passenger.GetRow();
+                            passenger.ChangeRow(r - missingRow);
+                        }
+                    }
+
+                    lane.SetMissingRow(0);
+                }
+            }
         }
 
         private void UpdateSpawnBus(float dt)
@@ -73,15 +163,22 @@ namespace BA.GameStates
             if (this.spawnedBuses.Any(bus => bus.GetCurrentState() == BusState.Idle))
                 return;
 
+            if (this.busesSpawnConfig.Count <= 0)
+                return;
+
             this.spawnBusDelayInterval += dt;
             if (this.spawnBusDelayInterval >= Config.DELAY_SPAWN_BUS_DURATION)
             {
                 this.spawnBusDelayInterval = 0f;
 
-                if (this.passengersOnStation.Count < this.busStationBehaviour.GetCapacity() * Config.SPAWN_BUS_SURE_WIN_THRESHOLE)
-                    GenerateBusCommon();
-                else
-                    GenerateBusSureWin();
+                var spawnColor = this.busesSpawnConfig[0];
+                this.busesSpawnConfig.RemoveAt(0);
+                this.spawnedBuses.Add(this.busManager.CreateBus(spawnColor, this.map.GetSpawnPoint()));
+
+                //if (this.passengersOnStation.Count < this.busStationBehaviour.GetCapacity() * Config.SPAWN_BUS_SURE_WIN_THRESHOLE)
+                //    GenerateBusCommon();
+                //else
+                //    GenerateBusSureWin();
             }
         }
 
@@ -136,6 +233,13 @@ namespace BA.GameStates
             {
                 bus.Release();
                 this.spawnedBuses.Remove(bus);
+                this.score += 32;
+
+                // 160 score is max per lane, 3 lane is 480
+                if (this.score >= this.maxScore)
+                {
+                    this.gameStateManager.ChangeState(new LevelWinState());
+                }
             }
         }
 
@@ -244,7 +348,7 @@ namespace BA.GameStates
             return allowMove;
         }
 
-        private void UpdatePassengerMovement(float dt)
+        private void UpdatePassengerMoveToBus(float dt)
         {
             for (var i = this.passengersOnStation.Count - 1; i >= 0; i--)
             {
@@ -282,6 +386,7 @@ namespace BA.GameStates
             if (passengerBlocks.Count > 0)
             {
                 var firstBlock = passengerBlocks.Dequeue();
+                lane.SetMissingRow(firstBlock.passengers.Count / 4);
                 this.passengersOnStation.AddRange(firstBlock.passengers);
 
                 for (var i = 0; i < firstBlock.passengers.Count; i++)
@@ -308,8 +413,7 @@ namespace BA.GameStates
 
         private async UniTask DelayGameover()
         {
-            await UniTask.Delay(2000);
-            Debug.Log("You Lose");
+            await UniTask.Delay(1000);
             this.gameStateManager.ChangeState(new LevelGameoverState());
         }
 
@@ -321,7 +425,7 @@ namespace BA.GameStates
 
             this.passengersOnStation.Max(p => p.GetColor());
 
-            var mostFrequent = passengersOnStation
+            var mostFrequent = this.passengersOnStation
                 .GroupBy(obj => obj.GetColor()) // Group by color
                 .OrderByDescending(group => group.Count())
                 .Select(group => group.Key)

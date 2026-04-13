@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
 
         this.levelManager.LoadLevel(1);
         this.stateManager.ChangeState(new LevelStartingState());
+
+        Application.targetFrameRate = 60;
     }
 
     private void Update()

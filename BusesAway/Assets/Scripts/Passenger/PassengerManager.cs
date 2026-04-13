@@ -19,12 +19,20 @@ namespace BA.Passenger
             for (var i = 0; i < spawnQueue.Count; i++)
             {
                 var block = spawnQueue[i];
+                if (block.amount + spawnCount >= grid.GetLength())
+                    break;
+
                 var passengers = new List<PassengerBehaviour>();
                 for (var j = 0; j < block.amount; j++)
                 {
                     if (spawnCount < grid.GetLength())
-                        passengers.Add(CreatePassenger(block.color, grid[spawnCount++]));
-                }
+                    {
+                        grid.GetRowCol(spawnCount, out var r, out var c);
+                        var passenger = CreatePassenger(block.color, grid[spawnCount++]);
+                        passenger.Setup(lane.GetLaneIndex(), r, c);
+                        passengers.Add(passenger);
+                    }
+                } 
                 passengerBlocks.Enqueue(new() { color = block.color, passengers = passengers });
 
                 if (spawnCount >= grid.GetLength())

@@ -47,13 +47,13 @@ public class Grid : MonoBehaviour
                 ) + this.offset;
 
                 Vector3 finalPos;
-                if (updateRotation)
+                if (this.updateRotation)
                 {
-                    finalPos = transform.TransformPoint(localPos);
+                    finalPos = this.transform.TransformPoint(localPos);
                 }
                 else
                 {
-                    finalPos = transform.position + localPos;
+                    finalPos = this.transform.position + localPos;
                 }
 
                 this.slotPoints.Add(finalPos);
@@ -66,20 +66,20 @@ public class Grid : MonoBehaviour
         CalculatePoints();
 
         var gizmosColor = Gizmos.color;
-        for (int i = 0; i < slotPoints.Count; i++)
+        for (int i = 0; i < this.slotPoints.Count; i++)
         {
             Gizmos.color = (i == 0) ? Color.red : Color.white;
 
-            if (updateRotation)
+            if (this.updateRotation)
             {
                 // Nếu updateRotation, vẽ Cube theo hướng của Transform
-                Gizmos.matrix = Matrix4x4.TRS(slotPoints[i], transform.rotation, Vector3.one);
+                Gizmos.matrix = Matrix4x4.TRS(this.slotPoints[i], this.transform.rotation, Vector3.one);
                 Gizmos.DrawCube(Vector3.zero, Vector3.one * 0.1f);
                 Gizmos.matrix = Matrix4x4.identity; // Reset matrix
             }
             else
             {
-                Gizmos.DrawCube(slotPoints[i], Vector3.one * 0.1f);
+                Gizmos.DrawCube(this.slotPoints[i], Vector3.one * 0.1f);
             }
         }
         Gizmos.color = gizmosColor;
@@ -95,7 +95,14 @@ public class Grid : MonoBehaviour
 
     public Vector3 GetPoint(int index)
     {
-        if (index < 0 || index >= this.slotPoints.Count) return transform.position;
+        if (index < 0 || index >= this.slotPoints.Count) return this.transform.position;
+        return this.slotPoints[index];
+    }
+
+    public Vector3 GetPoint(int r, int c)
+    {
+        var index = GetIndex(r, c);
+        if (index < 0 || index >= this.slotPoints.Count) return this.transform.position;
         return this.slotPoints[index];
     }
 
@@ -107,5 +114,30 @@ public class Grid : MonoBehaviour
     public List<Vector3> GetShuffled()
     {
         return this.slotPoints.GetShuffled();
+    }
+
+    public void GetRowCol(int index, out int r, out int c)
+    {
+        if (index < 0 || index >= this.rows * this.cols)
+        {
+            r = -1;
+            c = -1;
+            return;
+        }
+
+        // Since you add columns in the inner loop:
+        r = index / this.cols;
+        c = index % this.cols;
+    }
+
+    public int GetIndex(int r, int c)
+    {
+        // Bounds check to prevent out-of-range errors
+        if (r < 0 || r >= this.rows || c < 0 || c >= this.cols)
+        {
+            return -1;
+        }
+
+        return (r * this.cols) + c;
     }
 }

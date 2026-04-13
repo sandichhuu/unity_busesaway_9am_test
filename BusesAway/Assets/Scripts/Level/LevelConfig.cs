@@ -28,28 +28,28 @@ namespace BA.Level
             this.lane1Config = new()
             {
                 { PassengerColor.Red, 1 },
-                { PassengerColor.Green, 2 },
-                { PassengerColor.Blue, 3 },
-                { PassengerColor.Yellow, 4 },
-                { PassengerColor.Purple, 5 }
+                { PassengerColor.Green, 1 },
+                { PassengerColor.Blue, 1 },
+                { PassengerColor.Purple, 1 },
+                { PassengerColor.Yellow, 1 },
             };
 
             this.lane2Config = new()
             {
-                { PassengerColor.Red, 5 },
-                { PassengerColor.Green, 4 },
-                { PassengerColor.Blue, 3 },
-                { PassengerColor.Yellow, 2 },
-                { PassengerColor.Purple, 1 }
+                { PassengerColor.Red, 1 },
+                { PassengerColor.Green, 1 },
+                { PassengerColor.Blue, 1 },
+                { PassengerColor.Purple, 1 },
+                { PassengerColor.Yellow, 1 },
             };
 
             this.lane3Config = new()
             {
-                { PassengerColor.Red, 3 },
-                { PassengerColor.Green, 4 },
-                { PassengerColor.Blue, 5 },
+                { PassengerColor.Red, 1 },
+                { PassengerColor.Green, 1 },
+                { PassengerColor.Blue, 1 },
+                { PassengerColor.Purple, 1 },
                 { PassengerColor.Yellow, 1 },
-                { PassengerColor.Purple, 2 }
             };
 
             var lane1 = GenerateBusesAwayList(this.lane1Config, this.maxSpawnEachBlock);
