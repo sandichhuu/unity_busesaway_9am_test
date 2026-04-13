@@ -1,8 +1,8 @@
 using BA.Bus;
 using BA.Lane;
 using BA.Level;
+using BA.Map;
 using BA.Passenger;
-using BA.Tunnel;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +18,7 @@ namespace BA.GameStates
         private GameStateManager gameStateManager;
         private BusManager busManager;
         private BusStationBehaviour busStationBehaviour;
-
-        private StartTunnelBehaviour startTunnelBehaviour;
-        private EndTunnelBehaviour endTunnelBehaviour;
+        private MapBehaviour map;
 
         private List<PassengerBehaviour> passengersOnStation = new();
         private List<Vector3> busyStationPoints = new();
@@ -30,6 +28,7 @@ namespace BA.GameStates
 
         private List<BusBehaviour> spawnedBuses = new();
         private float spawnBusDelayInterval = 0f;
+        private List<PassengerBehaviour> readyEnterBusBuffer = new();
 
         void IGameState.OnEnter()
         {
@@ -39,11 +38,10 @@ namespace BA.GameStates
             this.gameStateManager = gameManager.stateManager;
             this.busManager = gameManager.GetBusManager();
             this.busStationBehaviour = Object.FindAnyObjectByType<BusStationBehaviour>();
-            this.startTunnelBehaviour = Object.FindAnyObjectByType<StartTunnelBehaviour>();
-            this.endTunnelBehaviour = Object.FindAnyObjectByType<EndTunnelBehaviour>();
+            this.map = Object.FindAnyObjectByType<MapBehaviour>();
             this.stationPoints = this.busStationBehaviour.GetGrid().GetShuffled();
 
-            GenerateBus();
+            GenerateBusCommon();
         }
 
         void IGameState.OnExit()
@@ -54,8 +52,6 @@ namespace BA.GameStates
         {
             if (this.isGameover)
                 return;
-
-            UpdateInteraction();
         }
 
         void IGameState.OnUpdate(float dt)
@@ -63,6 +59,7 @@ namespace BA.GameStates
             if (this.isGameover)
                 return;
 
+            UpdateInteraction();
             UpdateSpawnBus(dt);
             UpdateBuses(dt);
             UpdatePassengerMovement(dt);
@@ -80,7 +77,11 @@ namespace BA.GameStates
             if (this.spawnBusDelayInterval >= Config.DELAY_SPAWN_BUS_DURATION)
             {
                 this.spawnBusDelayInterval = 0f;
-                GenerateBus();
+
+                if (this.passengersOnStation.Count < this.busStationBehaviour.GetCapacity() * Config.SPAWN_BUS_SURE_WIN_THRESHOLE)
+                    GenerateBusCommon();
+                else
+                    GenerateBusSureWin();
             }
         }
 
@@ -94,16 +95,29 @@ namespace BA.GameStates
                 switch (state)
                 {
                     case BusState.Idle:
-                        if (IsAllowBusMove(bus))
+                        if (IsAllowBusMove(bus, Config.START_BUS_DISTANCE))
                             bus.SetCurrentState(BusState.Starting);
                         break;
                     case BusState.Starting:
-                        busMovement.UpdateMovementStartup(dt);
+                        busMovement.UpdateMovementToTarget(dt);
                         if (busMovement.IsReachStartupPoint())
                             bus.SetCurrentState(BusState.Moving);
                         break;
                     case BusState.Moving:
-                        busMovement.UpdateMovementSpine(dt);
+                        if (IsAllowBusMove(bus, Config.BUS_DISTANCE_MOVABLE))
+                        {
+                            busMovement.UpdateMovementSpine(dt);
+                            UpdateSwitchToParkingState(bus);
+                        }
+                        break;
+                    case BusState.Parking:
+                        UpdateParkingState(bus);
+                        break;
+                    case BusState.MoveToPreDespawn:
+                        UpdateMoveToPreDespawnPoint(dt, bus);
+                        break;
+                    case BusState.MoveToDespawn:
+                        UpdateMoveToDespawn(dt, bus);
                         break;
                     default:
                         break;
@@ -111,7 +125,100 @@ namespace BA.GameStates
             }
         }
 
-        private bool IsAllowBusMove(BusBehaviour bus)
+        private void UpdateMoveToDespawn(float dt, BusBehaviour bus)
+        {
+            bus.GetBusMovementUpdater().UpdateMovementToTarget(dt);
+
+            var despawnPoint = this.map.GetDespawnPoint();
+            var busPosition = bus.transform.position;
+            var distance = Vector3.Distance(busPosition, despawnPoint);
+            if (distance < 0.1f)
+            {
+                bus.Release();
+                this.spawnedBuses.Remove(bus);
+            }
+        }
+
+        private void UpdateMoveToPreDespawnPoint(float dt, BusBehaviour bus)
+        {
+            var busMovement = bus.GetBusMovementUpdater();
+            busMovement.UpdateMovementSpine(dt);
+            var distance = Mathf.Abs(this.map.GetPreDespawnNormalizedT() - busMovement.GetNormalizedT());
+            if (distance < 0.01f)
+            {
+                bus.SetCurrentState(BusState.MoveToDespawn);
+                busMovement.movementTargetPoint = this.map.GetDespawnPoint();
+            }
+        }
+
+        private void UpdateParkingState(BusBehaviour bus)
+        {
+            bus.GetGrid().CalculatePoints();
+            var busEntryPoint = bus.GetBusEntryPoint();
+            for (var i = this.readyEnterBusBuffer.Count - 1; i >= 0; i--)
+            {
+                var passenger = this.readyEnterBusBuffer[i];
+                if (passenger != null)
+                {
+                    passenger.transform.position = Vector3.MoveTowards(passenger.transform.position,
+                                                                       busEntryPoint,
+                                                                       10 * Time.deltaTime);
+
+                    if (Vector3.Distance(passenger.transform.position, busEntryPoint) <= 0.1f)
+                    {
+                        passenger.Release();
+                        bus.AddPassenger();
+                        this.readyEnterBusBuffer.RemoveAt(i);
+                    }
+                }
+            }
+
+            if (this.readyEnterBusBuffer.Count <= 0)
+            {
+                if (bus.availableSeats <= 0)
+                {
+                    bus.SetCurrentState(BusState.MoveToPreDespawn);
+                }
+                else
+                {
+                    bus.SetCurrentState(BusState.Moving);
+                }
+            }
+        }
+
+        private void UpdateSwitchToParkingState(BusBehaviour bus)
+        {
+            if (this.passengersOnStation.Any(p => p.GetColor() == bus.GetColor()) && IsReadyToParking(bus))
+            {
+                bus.SetCurrentState(BusState.Parking);
+
+                var availableSeats = bus.availableSeats;
+                for (var i = this.passengersOnStation.Count - 1; i >= 0; i--)
+                {
+                    var passenger = this.passengersOnStation[i];
+                    if (passenger.GetColor() == bus.GetColor())
+                    {
+                        this.readyEnterBusBuffer.Add(passenger);
+                        this.passengersOnStation.RemoveAt(i);
+                        this.stationPoints.Add(this.busyStationPoints[i]);
+                        this.busyStationPoints.RemoveAt(i);
+
+                        if (this.readyEnterBusBuffer.Count == availableSeats)
+                            break;
+                    }
+                }
+            }
+        }
+
+        private bool IsReadyToParking(BusBehaviour bus)
+        {
+            var parkingPoint = this.map.GetParkingPoint();
+            var distance = Vector3.Distance(bus.transform.position, parkingPoint);
+
+            return distance < 0.1f;
+        }
+
+        private bool IsAllowBusMove(BusBehaviour bus, float dst)
         {
             var allowMove = true;
 
@@ -124,8 +231,10 @@ namespace BA.GameStates
                 var busPosition = bus.transform.position;
                 var otherBusPosition = otherBus.transform.position;
                 var distance = Vector3.Distance(busPosition, otherBusPosition);
-
-                if (distance < Config.MOVABLE_BUS_DISTANCE)
+                var isBothMoving = bus.GetCurrentState() == BusState.Moving &&
+                                   otherBus.GetCurrentState() == BusState.Moving;
+                var isOtherStopping = otherBus.GetCurrentState() == BusState.MoveToDespawn;
+                if (distance < dst && (!isBothMoving || isOtherStopping))
                 {
                     allowMove = false;
                     break;
@@ -144,7 +253,7 @@ namespace BA.GameStates
                 {
                     passenger.transform.position = Vector3.MoveTowards(passenger.transform.position,
                                                                        this.busyStationPoints[i],
-                                                                       Config.DEFAULT_MOVEMENT_SPEED * Time.deltaTime);
+                                                                       Config.DEFAULT_BUS_MOVEMENT_SPEED * Time.deltaTime);
                 }
             }
         }
@@ -204,7 +313,24 @@ namespace BA.GameStates
             this.gameStateManager.ChangeState(new LevelGameoverState());
         }
 
-        private void GenerateBus()
+        private void GenerateBusSureWin()
+        {
+            // Make sure do not spawn too much bus at same time
+            if (this.spawnedBuses.Count >= this.levelManager.GetCurrentLevelConfig().maxBusAtSameTime)
+                return;
+
+            this.passengersOnStation.Max(p => p.GetColor());
+
+            var mostFrequent = passengersOnStation
+                .GroupBy(obj => obj.GetColor()) // Group by color
+                .OrderByDescending(group => group.Count())
+                .Select(group => group.Key)
+                .FirstOrDefault();
+
+            this.spawnedBuses.Add(this.busManager.CreateBus(mostFrequent, this.map.GetSpawnPoint()));
+        }
+
+        private void GenerateBusCommon()
         {
             // Make sure do not spawn too much bus at same time
             if (this.spawnedBuses.Count >= this.levelManager.GetCurrentLevelConfig().maxBusAtSameTime)
@@ -232,7 +358,7 @@ namespace BA.GameStates
             {
                 var randomColor = randomColorList[Random.Range(0, randomColorList.Count)];
                 Debug.Log($"Bus: {randomColor}");
-                this.spawnedBuses.Add(this.busManager.CreateBus(randomColor, this.startTunnelBehaviour.transform.position));
+                this.spawnedBuses.Add(this.busManager.CreateBus(randomColor, this.map.GetSpawnPoint()));
             }
         }
     }

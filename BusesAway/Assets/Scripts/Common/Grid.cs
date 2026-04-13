@@ -10,6 +10,7 @@ public class Grid : MonoBehaviour
     public float spacingX = 0.6f;
     public float spacingY = 0.5f;
     public float rowOffset = 0.3f;
+    public bool updateRotation = false;
     public List<Vector3> slotPoints = new(128);
 
     [Header("Flip Settings")]
@@ -21,11 +22,13 @@ public class Grid : MonoBehaviour
         CalculatePoints();
     }
 
-    private void CalculatePoints()
+    public void CalculatePoints()
     {
         this.slotPoints.Clear();
-        var pos = this.transform.position;
-        var y = pos.y * -1f;
+
+        // Lưu ý: Y ở đây thường là local offset nếu bạn muốn grid nằm trên mặt phẳng
+        // Tôi giữ nguyên logic y = pos.y * -1f của bạn nhưng đưa vào tính toán local
+        float localY = 0f;
 
         for (int r = 0; r < this.rows; r++)
         {
@@ -36,39 +39,49 @@ public class Grid : MonoBehaviour
                 int actualC = this.flipX ? (this.cols - 1 - c) : c;
 
                 float xOffset = (actualR % 2 != 0) ? this.rowOffset : 0f;
-                Vector3 newPos = new(
-                    actualC * this.spacingX + xOffset,
-                    y,
-                    actualR * this.spacingY
-                );
 
-                this.slotPoints.Add(pos + newPos + this.offset);
+                Vector3 localPos = new Vector3(
+                    actualC * this.spacingX + xOffset,
+                    localY,
+                    actualR * this.spacingY
+                ) + this.offset;
+
+                Vector3 finalPos;
+                if (updateRotation)
+                {
+                    finalPos = transform.TransformPoint(localPos);
+                }
+                else
+                {
+                    finalPos = transform.position + localPos;
+                }
+
+                this.slotPoints.Add(finalPos);
             }
         }
     }
 
     private void OnDrawGizmos()
     {
+        CalculatePoints();
+
         var gizmosColor = Gizmos.color;
-
-        var pos = this.transform.position;
-        var y = pos.y * -1f;
-
-        for (int r = 0; r < this.rows; r++)
+        for (int i = 0; i < slotPoints.Count; i++)
         {
-            int actualR = flipY ? (this.rows - 1 - r) : r;
-            for (int c = 0; c < this.cols; c++)
+            Gizmos.color = (i == 0) ? Color.red : Color.white;
+
+            if (updateRotation)
             {
-                int actualC = flipX ? (this.cols - 1 - c) : c;
-
-                float xOffset = (actualR % 2 != 0) ? this.rowOffset : 0f;
-                Vector3 point = pos + new Vector3(actualC * this.spacingX + xOffset, y, actualR * this.spacingY) + this.offset;
-
-                Gizmos.color = (r == 0 && c == 0) ? Color.red : Color.white;
-                Gizmos.DrawCube(point, Vector3.one * 0.1f);
+                // Nếu updateRotation, vẽ Cube theo hướng của Transform
+                Gizmos.matrix = Matrix4x4.TRS(slotPoints[i], transform.rotation, Vector3.one);
+                Gizmos.DrawCube(Vector3.zero, Vector3.one * 0.1f);
+                Gizmos.matrix = Matrix4x4.identity; // Reset matrix
+            }
+            else
+            {
+                Gizmos.DrawCube(slotPoints[i], Vector3.one * 0.1f);
             }
         }
-
         Gizmos.color = gizmosColor;
     }
 
@@ -76,12 +89,13 @@ public class Grid : MonoBehaviour
     {
         get
         {
-            return this.slotPoints[index];
+            return GetPoint(index);
         }
     }
 
     public Vector3 GetPoint(int index)
     {
+        if (index < 0 || index >= this.slotPoints.Count) return transform.position;
         return this.slotPoints[index];
     }
 

@@ -32,7 +32,7 @@ namespace BA.Passenger
             }
         }
 
-        private PassengerBehaviour CreatePassenger(PassengerColor color, Vector3 position)
+        public PassengerBehaviour CreatePassenger(PassengerColor color, Vector3 position)
         {
             var passenger = this.factory.CreatePassenger(color, position);
             passenger.gameObject.name = $"Passenger[{passenger.GetUUID()}]";
