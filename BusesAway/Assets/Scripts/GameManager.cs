@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PassengerManager passengerManager;
     [SerializeField] private BusManager busManager;
     [SerializeField] private LaneManager laneManager;
+    [SerializeField] private FxManager fxManager;
 
     private void Start()
     {
@@ -49,5 +50,10 @@ public class GameManager : MonoBehaviour
     public LaneManager GetLaneManager()
     {
         return this.laneManager;
+    }
+
+    public FxManager GetFxManager()
+    {
+        return this.fxManager;
     }
 }

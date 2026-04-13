@@ -1,5 +1,7 @@
 using BA.Passenger;
+using DG.Tweening;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -26,6 +28,7 @@ namespace BA.Bus
         [SerializeField] private BusState currentBusState;
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private int capacity;
+        [SerializeField] private TextMeshPro quantityText;
 
         private int seatCount;
         public int availableSeats => this.capacity - this.seatCount;
@@ -35,7 +38,8 @@ namespace BA.Bus
 
         public void Setup(ObjectPool<BusBehaviour> pool, PassengerColor passengerColor, Material material, Vector3 initialPosition)
         {
-            this.passengerManager = FindAnyObjectByType<GameManager>().GetPassengerManager();
+            var gm = FindAnyObjectByType<GameManager>();
+            this.passengerManager = gm.GetPassengerManager();
 
             this.pool = pool;
             this.meshRenderer.materials = new Material[] { material };
@@ -43,6 +47,7 @@ namespace BA.Bus
             this.transform.position = initialPosition;
             this.currentBusState = BusState.Idle;
             this.seatCount = 0;
+            this.quantityText.text = "0/32";
         }
 
         public void Release()
@@ -78,8 +83,14 @@ namespace BA.Bus
                 .CreatePassenger(this.passengerColor, this.grid.GetPoint(this.seatCount));
             passenger.transform.SetParent(this.transform);
             this.seatCount++;
+            this.quantityText.text = $"{this.seatCount}/32";
+            this.quantityText.transform.DOPunchScale(Vector3.one * .08f, .1f, 0, 1).OnComplete(() =>
+            {
+                this.quantityText.transform.localScale = Vector3.one;
+            });
 
             this.passengers.Add(passenger);
+            passenger.transform.DOPunchScale(Vector3.one * 0.2f, 0.1f, 1, 1);
         }
 
         public Vector3 GetBusEntryPoint()

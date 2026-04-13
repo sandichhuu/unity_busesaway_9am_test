@@ -33,6 +33,8 @@ namespace BA.GameStates
             this.passengerManager.SpawnPassengerBlock(this.laneManager.GetLane(1), spawnQueues[1]);
             this.passengerManager.SpawnPassengerBlock(this.laneManager.GetLane(2), spawnQueues[2]);
 
+            UnityEngine.Object.FindAnyObjectByType<UI_Game>().SetProgress(0, levelConfig.totalScore);
+
             this.stateManager.ChangeState(new LevelPlayingState());
         }
 

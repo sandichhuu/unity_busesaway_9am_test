@@ -19,6 +19,7 @@ namespace BA.GameStates
         private BusManager busManager;
         private BusStationBehaviour busStationBehaviour;
         private MapBehaviour map;
+        private FxManager fxManager;
 
         private List<PassengerBehaviour> passengersOnStation = new();
         private List<Vector3> busyStationPoints = new();
@@ -44,6 +45,7 @@ namespace BA.GameStates
             this.busManager = gameManager.GetBusManager();
             this.busStationBehaviour = Object.FindAnyObjectByType<BusStationBehaviour>();
             this.map = Object.FindAnyObjectByType<MapBehaviour>();
+            this.fxManager = gameManager.GetFxManager();
             this.stationPoints = this.busStationBehaviour.GetGrid().GetShuffled();
             this.score = 0;
             InitSpawnBusQueue();
@@ -102,12 +104,12 @@ namespace BA.GameStates
             UpdateBuses(dt);
             UpdatePassengers(dt);
             UpdateMissingRows(dt);
-            UpdatePassengerMoveToBus(dt);
         }
 
         private void UpdatePassengers(float dt)
         {
             UpdatePassengerMoveUp(dt);
+            UpdatePassengerMoveToBus(dt);
         }
 
         private void UpdatePassengerMoveUp(float dt)
@@ -192,7 +194,7 @@ namespace BA.GameStates
                 switch (state)
                 {
                     case BusState.Idle:
-                        if (IsAllowBusMove(bus, Config.START_BUS_DISTANCE))
+                        if (IsBusMovable(bus, Config.START_BUS_DISTANCE))
                             bus.SetCurrentState(BusState.Starting);
                         break;
                     case BusState.Starting:
@@ -201,7 +203,7 @@ namespace BA.GameStates
                             bus.SetCurrentState(BusState.Moving);
                         break;
                     case BusState.Moving:
-                        if (IsAllowBusMove(bus, Config.BUS_DISTANCE_MOVABLE))
+                        if (IsBusMovable(bus, Config.BUS_DISTANCE_MOVABLE))
                         {
                             busMovement.UpdateMovementSpine(dt);
                             UpdateSwitchToParkingState(bus);
@@ -231,9 +233,11 @@ namespace BA.GameStates
             var distance = Vector3.Distance(busPosition, despawnPoint);
             if (distance < 0.1f)
             {
+                this.fxManager.Emit("bus_entered_despawn", despawnPoint);
                 bus.Release();
                 this.spawnedBuses.Remove(bus);
                 this.score += 32;
+                Object.FindAnyObjectByType<UI_Game>().SetProgress(this.score, this.maxScore);
 
                 // 160 score is max per lane, 3 lane is 480
                 if (this.score >= this.maxScore)
@@ -270,6 +274,7 @@ namespace BA.GameStates
 
                     if (Vector3.Distance(passenger.transform.position, busEntryPoint) <= 0.1f)
                     {
+                        this.fxManager.Emit("passenger_enter_bus", busEntryPoint);
                         passenger.Release();
                         bus.AddPassenger();
                         this.readyEnterBusBuffer.RemoveAt(i);
@@ -304,6 +309,7 @@ namespace BA.GameStates
                     {
                         this.readyEnterBusBuffer.Add(passenger);
                         this.passengersOnStation.RemoveAt(i);
+                        this.busStationBehaviour.SetAmount(this.passengersOnStation.Count);
                         this.stationPoints.Add(this.busyStationPoints[i]);
                         this.busyStationPoints.RemoveAt(i);
 
@@ -322,7 +328,7 @@ namespace BA.GameStates
             return distance < 0.1f;
         }
 
-        private bool IsAllowBusMove(BusBehaviour bus, float dst)
+        private bool IsBusMovable(BusBehaviour bus, float dst)
         {
             var allowMove = true;
 
@@ -388,6 +394,7 @@ namespace BA.GameStates
                 var firstBlock = passengerBlocks.Dequeue();
                 lane.SetMissingRow(firstBlock.passengers.Count / 4);
                 this.passengersOnStation.AddRange(firstBlock.passengers);
+                this.busStationBehaviour.SetAmount(this.passengersOnStation.Count, true);
 
                 for (var i = 0; i < firstBlock.passengers.Count; i++)
                 {

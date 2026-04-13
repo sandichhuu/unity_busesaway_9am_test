@@ -1,5 +1,6 @@
 using BA.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace BA.Level
@@ -18,6 +19,7 @@ namespace BA.Level
         public Dictionary<PassengerColor, int> lane3Config; // Key: Color, Value: SpawnAmountMultiplier
 
         public List<List<PassengerBlockData>> spawnQueues;
+        public int totalScore;
 
         public void RegenerateSpawnQueues()
         {
@@ -56,6 +58,13 @@ namespace BA.Level
             var lane2 = GenerateBusesAwayList(this.lane2Config, this.maxSpawnEachBlock);
             var lane3 = GenerateBusesAwayList(this.lane3Config, this.maxSpawnEachBlock);
             this.spawnQueues = new() { lane1, lane2, lane3 };
+
+            CalcTotalScore();
+        }
+
+        private void CalcTotalScore()
+        {
+            this.totalScore = this.lane1Config.Values.Sum() + this.lane2Config.Values.Sum() + this.lane3Config.Values.Sum();
         }
 
         public List<PassengerBlockData> GenerateBusesAwayList(Dictionary<PassengerColor, int> config, int maxVal)
